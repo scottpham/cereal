@@ -1,0 +1,20 @@
+{
+  "name": "d3-test",
+  "version": "1.0.0",
+  "description": "An app",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-express": "^1.4.1",
+    "grunt-ftp-deploy": "^0.1.10",
+    "grunt-open": "^0.2.3",
+    "jshint-stylish": "^2.0.1"
+  }
+}

@@ -1,0 +1,24 @@
+.c3-axis {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+}
+
+.y.axis path,
+.c3-axis-y line {
+    fill: none;
+    stroke: lightgray;
+    shape-rendering: crispEdges;
+}
+/*remove axis path(line) and line(tick mark)*/
+
+.c3-axis-x path {
+    stroke: none;
+}
+
+.c3-axis-x line {
+    stroke: gray;
+}
+
+.c3-ygrids .c3-ygrid:first-child {
+    opacity: 0;
+}
