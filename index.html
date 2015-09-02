@@ -86,6 +86,8 @@
       width: 100px;
       color: white;
       padding: 5px;
+      psoition: absolute;
+      pointer-events: none;
     }
 
     .annotateMe {
@@ -106,6 +108,13 @@
       shape-rendering: crispEdges;
     }
 
+  select {
+    -webkit-appearance: none;
+    overflow: visible;
+    padding: 5px;
+    margin: 5px;
+  }
+
 
   </style>
 </head>
@@ -115,19 +124,40 @@
   <div id='container' class="container-fluid">
     <div class="row-fluid">
       <div class="col-xs-12">
-        <h1>TITLE</h1>
-        <h2>SUBTITLE</h2>
-        <p>FIRST GRAF</p>
-        <select name="yAxis" id="yAxisSelector">
+        <h1>Breakfast Time</h1>
+        <h2>Comparing <select name="xAxis" id="xAxisSelector">
+          <option name ="sugars (g)">Sugar</option>
           <option value="calcium (g)">Calcium</option>
-          <option value="sodium (g)">Sodium</option>  
-          <option value="fiber (g)"></option>
-          <option value="vitaminc (g)"></option>
-          <option value="potassium (g)"></option>
-          <option value="carbohydrate (g)"></option>
-          <option value="sugars (g)"></option>
-          <option value="fat (g)"></option>
+          <option value="sodium (g)">Sodium</option>
+          <option value="fiber (g)">Fiber</option>
+          <option value="vitaminc (g)">Vitamin C</option>
+          <option value="potassium (g)">Potassium</option>
+          <option value="carbohydrate (g)">Carbohydrates</option>
+          <option value="fat (g)">Fat</option>
+          <option value="water (g)">Water</option>
+          <option value="calories">Calories</option>
+          <option value="saturated (g)">Saturated Fat</option>
+          <option value="monounsat (g)">Monounsaturated Fat</option>
+          <option value="polyunsat (g)">Polyunsaturated Fat</option>
         </select>
+        to
+          <select name="yAxis" id="yAxisSelector">
+          <option value="calcium (g)">Calcium</option>
+          <option value="sodium (g)">Sodium</option>
+          <option value="fiber (g)">Fiber</option>
+          <option value="vitaminc (g)">Vitamin C</option>
+          <option value="potassium (g)">Potassium</option>
+          <option value="carbohydrate (g)">Carbohydrates</option>
+          <option value="sugars (g)">Sugar</option>
+          <option value="fat (g)">Fat</option>
+          <option value="water (g)">Water</option>
+          <option value="calories">Calories</option>
+          <option value="saturated (g)">Saturated Fat</option>
+          <option value="monounsat (g)">Monounsaturated Fat</option>
+          <option value="polyunsat (g)">Polyunsaturated Fat</option>
+
+        </select>
+      </h2>
       </div>
     </div>
 

@@ -1,7 +1,7 @@
 var margin = {
-  top: 30,
-  bottom: 50,
-  right: 40,
+  top: 10,
+  bottom: 80,
+  right: 50,
   left: 40
 };
 
@@ -9,7 +9,7 @@ var divWidth = window.innerWidth,
   //define inner width for main graphic
   //when we define svg we will use main width
   chartWidth = divWidth - margin.left - margin.right,
-  divHeight = 0.65 * divWidth,
+  divHeight = 0.45 * divWidth,
   chartHeight = divHeight - margin.top - margin.bottom;
 
 //x scale
@@ -122,7 +122,7 @@ console.log(data);
     .enter().append("circle")
       .attr("class", "dot")
       .attr("id", function(d) { return "id-" + d["id"] })
-      .attr("r", function(d){ return sizeScale(d["calories"]); })
+      .attr("r", function(d){ return 7+"px"; })
       //apply scale to the x position of the circle
       .attr("cx", function(d) { return x( d["sugars (g)"] ); })
       //apply scale to y position
@@ -131,12 +131,17 @@ console.log(data);
 
   d3.selectAll(".dot")
     .on("mouseover", function(d){
+
       tooltip.transition()
-        .duration(400)
         .style("opacity", 0.9);
+
+      //convenience helpers
+      var sugar = d["sugars (g)"],
+          calcium = d["calcium (g)"];
+
       tooltip.html(d["name"])
-        .style("left", (x(xValue(d))) + "px")
-        .style("top", (y(yValue(d))) + "px");
+        .style("left", x(sugar) -50 + "px")
+        .style("top", y(calcium) - 60 + "px");
   });
 
   d3.selectAll(".dot")
@@ -148,38 +153,62 @@ console.log(data);
         .style("opacity", 0);
   });
 
-  //annotation divs
-  var annotation = d3.select('#graphic')
-      .selectAll(".annotateMe")
-      .data(data)
-      .enter()
-      .append("div")
-        .filter( function(d) { return d["calcium (g)"] > 2; })
-          .attr("class", "annotateMe")
-          .style("top", function(d) {
-            //select the target dot from the dom
-            var dotID = "id-" + d["id"],
-              dot = document.getElementById(dotID),
-              //distance between dot and document
-              dotOffset = $(dot).offset(),
-              //distance between parent and document
-              graphicOffset = $('#graphic').offset();
-              //the dot offset will be bigger because it is farther away from the top
-              //subtract the parent offset from the dot to get the
-                 //position of the dot WITHIN the graphic
-                 //if you don't subtract you get position of graphic
-                 //within the document, which will work with
-                 //fixed position but not absolute
-              return (dotOffset.top - graphicOffset.top - 50) + "px";
-          })
-          .style("left", function(d){
-            var dotID = "id-" + d["id"],
-              dot = document.getElementById(dotID),
-                dotOffset = $(dot).offset(),
-                graphicOffset = $('#graphic').offset();
+    //y axis select
+    d3.select('#yAxisSelector').on("change", function() {
 
-              return dotOffset.left - graphicOffset.left - 100 + "px";
-          })
-          .html(function(d){ return d["name"]; });
+      //the name of the column
+      var selected = this.value;
+
+      //coerce that shit
+      data.forEach(function(d){
+        d[selected] = +d[selected];
+      });
+
+      //get a new y scale
+      var newY = y.copy();
+      newY.domain(d3.extent(data, function(d){
+        return d[selected]; }));
+
+      //get a new y axis
+      var newYAxis = yAxis.scale(newY);
+
+      // transition the axis
+      svg.transition().select(".y.axis")
+        .call(newYAxis);
+
+      //change the label
+      svg.transition().select(".y.axis")
+          .select(".label")
+          .text(function(d){ return selected; });
+
+      svg.selectAll(".dot")
+        .data(data)
+        .transition()
+        .attr("cy", function(d){ return newY( d[selected] ); });
+
+    svg.selectAll(".dot")
+      .on("mouseover", function(d){
+        tooltip.transition()
+          .style("opacity", 0.9);
+        //convenience helpers
+        var xposition = d["sugars (g)"],
+            yposition = d[selected];
+
+        tooltip.html(d["name"])
+          .style("left", x(xposition) -50 + "px")
+          .style("top", newY(yposition) - 60 + "px");
+    });
+
+    svg.selectAll(".dot")
+      .on("mouseout", function(d){
+        tooltip.transition()
+          .style("left", 0)
+          .style("top", 0)
+          .duration(500)
+          .style("opacity", 0);
+    });
+
+
+    });//end of event
 
 };
