@@ -95,7 +95,7 @@ console.log(data);
     .call(xAxis)
   //append single text elemnt for label
   .append("text")
-    .attr("class", "label")
+    .attr("class", "xlabel")
     .attr("x", chartWidth/2)
     .attr("y", 25)
     //this modifies an svg inline style
@@ -108,7 +108,7 @@ console.log(data);
     .call(yAxis)
   //this is just the axis label
   .append("text")
-    .attr("class", "label")
+    .attr("class", "ylabel")
     .attr("transform", "rotate(-90)")
     .attr("y", 6)
     .attr("dy", "0.71em")
@@ -156,6 +156,8 @@ console.log(data);
     //y axis select
     d3.select('#yAxisSelector').on("change", function() {
 
+      var xSelection = $('#xAxisSelector').val();
+
       //the name of the column
       var selected = this.value;
 
@@ -169,6 +171,11 @@ console.log(data);
       newY.domain(d3.extent(data, function(d){
         return d[selected]; }));
 
+      //get a new x scale
+      var newX = x.copy();
+      newX.domain(d3.extent(data, function(d){
+        return d[xSelection]; }));
+
       //get a new y axis
       var newYAxis = yAxis.scale(newY);
 
@@ -178,24 +185,26 @@ console.log(data);
 
       //change the label
       svg.transition().select(".y.axis")
-          .select(".label")
+          .select(".ylabel")
           .text(function(d){ return selected; });
 
+      //move the dots
       svg.selectAll(".dot")
         .data(data)
         .transition()
         .attr("cy", function(d){ return newY( d[selected] ); });
 
+    //mouseover effects
     svg.selectAll(".dot")
       .on("mouseover", function(d){
         tooltip.transition()
           .style("opacity", 0.9);
         //convenience helpers
-        var xposition = d["sugars (g)"],
+        var xposition = d[xSelection],
             yposition = d[selected];
 
         tooltip.html(d["name"])
-          .style("left", x(xposition) -50 + "px")
+          .style("left", newX(xposition) -50 + "px")
           .style("top", newY(yposition) - 60 + "px");
     });
 
@@ -208,7 +217,72 @@ console.log(data);
           .style("opacity", 0);
     });
 
-
     });//end of event
+
+//x axis selector
+  //y axis select
+  d3.select('#xAxisSelector').on("change", function() {
+    var ySelection = $('#yAxisSelector').val();
+
+    //the name of the column
+    var selected = this.value;
+
+    //coerce that shit
+    data.forEach(function(d){
+      d[selected] = +d[selected];
+    });
+
+    //get a new y scale
+    var newY = y.copy();
+    newY.domain(d3.extent(data, function(d){
+      return d[ySelection]; }));
+
+    //get a new x scale
+    var newX = x.copy();
+    newX.domain(d3.extent(data, function(d){
+      return d[selected]; }));
+
+    //get a new y axis
+    var newXAxis = xAxis.scale(newX);
+
+    // transition the axis
+    svg.transition().select(".x.axis")
+      .call(newXAxis);
+
+    //change the label
+    svg.transition().select(".x.axis")
+        .select(".xlabel")
+        .text(function(d){ return selected; });
+
+    //move the dots
+    svg.selectAll(".dot")
+      .data(data)
+      .transition()
+      .attr("cx", function(d){ return newX( d[selected] ); });
+
+  svg.selectAll(".dot")
+    .on("mouseover", function(d){
+      tooltip.transition()
+        .style("opacity", 0.9);
+      //convenience helpers
+      var xposition = d[selected],
+          yposition = d[ySelection];
+
+      tooltip.html(d["name"])
+        .style("left", newX(xposition) -50 + "px")
+        .style("top", newY(yposition) - 60 + "px");
+  });
+
+  svg.selectAll(".dot")
+    .on("mouseout", function(d){
+      tooltip.transition()
+        .style("left", 0)
+        .style("top", 0)
+        .duration(500)
+        .style("opacity", 0);
+  });
+
+  });//end of event
+
 
 };
