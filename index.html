@@ -108,14 +108,24 @@
       shape-rendering: crispEdges;
     }
 
-  select {
-    -webkit-appearance: none;
-    overflow: visible;
-    padding: 5px;
-    margin: 5px;
-  }
+    select {
+      -webkit-appearance: none;
+      overflow: visible;
+      padding: 5px;
+      margin: 5px;
+      width: 200px;
+    }
 
+    #nameChooser {
+      width: 100%;
+    }
 
+    .dot.highlighted {
+      fill: yellow;
+      stroke: black;
+      opacity: 1;
+      stroke-width: 2;
+    }
   </style>
 </head>
 
@@ -125,7 +135,8 @@
     <div class="row-fluid">
       <div class="col-xs-12">
         <h1>Breakfast Time</h1>
-        <h4>Comparing <select name="xAxis" id="xAxisSelector">
+        <h2>Explore the nutritional data of over 300 breakfast cereals. Why? Because you have always been wondering.</h2>
+        <h4>Compare <select name="xAxis" id="xAxisSelector">
           <option value ="sugars (g)">Sugar</option>
           <option value="calcium (g)">Calcium</option>
           <option value="sodium (g)">Sodium</option>
@@ -140,6 +151,8 @@
           <option value="monounsat (g)">Monounsaturated Fat</option>
           <option value="polyunsat (g)">Polyunsaturated Fat</option>
         </select>
+        </h4>
+        <h4>
         to
           <select name="yAxis" id="yAxisSelector">
           <option value="calcium (g)">Calcium</option>
@@ -160,13 +173,13 @@
       </h4>
       </div>
 
-    <div class="col-xs-12">
-      <h4>Optional: Track a cereal
-        <select name="nameChooser" id="nameChooser">
+      <div class="col-xs-12">
+        <p>If you like, highlight a cereal:
+          <select name="nameChooser" id="nameChooser">
 
-        </select>
-      </h4>
-    </div>
+          </select>
+        </p>
+      </div>
     </div>
 
     <div class="row-fluid">
@@ -174,7 +187,7 @@
         <!-- graphic goes here -->
         <div id="graphic"></div>
         <div class="footnotes">
-          <h4>Notes:</h4>
+          <h4>Notes: WTF is 'Crispy Brown Rice?' I dunno, but it was in the data.</h4>
         </div>
         <div class="footer">
           <p>Source: USDA</p>

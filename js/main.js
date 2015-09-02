@@ -1,3 +1,9 @@
+d3.selection.prototype.moveToFront = function() {
+  return this.each(function(){
+  this.parentNode.appendChild(this);
+  });
+};
+
 var margin = {
   top: 10,
   bottom: 80,
@@ -40,12 +46,12 @@ var svg = d3.select("#graphic").append("svg")
 
 d3.csv("data/cereals.csv", function(error, data){
   if(error) throw error;
-  //populate that dropdown with the data
 
+  //populate that dropdown with the data
   var options = $("#nameChooser");
 
   $.each(data,function(){
-    options.append($("<option />").val(this.name).text(this.name));
+    options.append($("<option />").val(this.id).text(this.name));
   });
 
   makeChart(data);
@@ -128,7 +134,7 @@ console.log(data);
       .attr("class", "dot")
       //give each circle a unique id for mouse events
       .attr("id", function(d) { return "id-" + d["id"] })
-      .attr("r", function(d){ return 7+"px"; })
+      .attr("r", function(d){ return 6; })
       //apply scale to the x position of the circle
       .attr("cx", function(d) { return x( d[xSelected] ); })
       //apply scale to y position
@@ -137,27 +143,29 @@ console.log(data);
 
 //helper function to keep tooltip in page
 function stayInPage(num){
-  console.log(num);
-  console.log(num < margin.left);
-    if(num < margin.left){
-      return margin.left;
-    } return num;
-  }
+  if(num < margin.left){
+    return margin.left;
+  } return num;
+}
 
   d3.selectAll(".dot")
     .on("mouseover", function(d){
+      var circle = d3.select(this);
+      //movetofront
+      circle.moveToFront();
 
+      //make tooltip visible
       tooltip.transition()
         .style("opacity", 0.8);
 
       //convenience helpers
-      var sugar = d[xSelected],
-          calcium = d[ySelected];
+      var xposition = circle.attr("cx") - 20,
+          yposition = circle.attr("cy") - 10;
 
       tooltip.html(d["name"])
         //use scale positioning of data to position tooltip
-        .style("left", stayInPage(x(sugar)) + "px")
-        .style("top", y(calcium) + "px");
+        .style("left", stayInPage(xposition) + "px")
+        .style("top", yposition + "px");
   });
 
   d3.selectAll(".dot")
@@ -202,18 +210,29 @@ function stayInPage(num){
         .transition()
         .attr("cy", function(d){ return y( d[ySelection] ); });
 
+//window.setTimeout(changeMouseover, 1500);
       //mouseover effects
+
+  function changeMouseover() {
+
       svg.selectAll(".dot")
         .on("mouseover", function(d){
+
+          d3.select(this).moveToFront();
+          console.log(this);
+          console.log(d.id);
+
+          circle = d3.select(this);
+
           tooltip.transition()
             .style("opacity", 0.9);
-          //convenience helpers
-          var xposition = d[xSelection],
-              yposition = d[ySelection];
+          //helpers
+          var xposition = circle.attr("cx"),
+              yposition = circle.attr("cy");
 
           tooltip.html(d["name"])
-            .style("left", x(xposition) + "px")
-            .style("top", y(yposition) + "px");
+            .style("left", xposition + "px")
+            .style("top", yposition + "px");
       });
 
       svg.selectAll(".dot")
@@ -223,6 +242,7 @@ function stayInPage(num){
             .style("top", 0)
             .style("opacity", 0);
       });
+  }
 
     });//end of event
 
@@ -261,16 +281,24 @@ function stayInPage(num){
     svg.selectAll(".dot")
       .data(data)
       .transition()
-      .attr("cx", function(d){ return x( d[xSelection] ); });
+      .attr("cx", function(d){ return x( d[xSelection] ); }); //call function after transition
 
-    //mouseover effects
-    svg.selectAll(".dot")
+window.setTimeout(changeMouseover, 1000);
+
+//add a timeout or something here
+function changeMouseover(){
+  svg.selectAll(".dot")
       .on("mouseover", function(d){
+        d3.select(this).moveToFront();
+
         tooltip.transition()
           .style("opacity", 0.9);
         //convenience helpers
         var xposition = d[xSelection],
-            yposition = d[ySelection];
+            yposition = d[ySelection],
+            id = d["id"];
+
+        console.log(d);
 
         tooltip.html(d["name"])
           .style("left", x(xposition) + "px")
@@ -284,8 +312,28 @@ function stayInPage(num){
           .style("top", 0)
           .style("opacity", 0);
     });
+  }//end change mouseover
 
   });//end of event
+
+
+  d3.select("#nameChooser").on("change", function(){
+    var name = this.value;
+
+    svg.selectAll(".dot")
+      .data(data)
+      .style("fill", function(d){
+        return color( d["calories"] );
+      })
+      .attr("r", 6)
+      .classed("highlighted", false);
+
+    d3.select("#id-" + name)
+      .classed("highlighted", true)
+      .style("fill", "yellow")
+      .attr("r", 10)
+      .moveToFront();
+  });
 
 
 };
