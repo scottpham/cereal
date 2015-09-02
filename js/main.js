@@ -2,7 +2,7 @@ var margin = {
   top: 10,
   bottom: 80,
   right: 50,
-  left: 100
+  left: 60
 };
 
 var divWidth = window.innerWidth,
@@ -40,8 +40,19 @@ var svg = d3.select("#graphic").append("svg")
 
 d3.csv("data/cereals.csv", function(error, data){
   if(error) throw error;
+  //populate that dropdown with the data
+
+  var options = $("#nameChooser");
+
+  $.each(data,function(){
+    options.append($("<option />").val(this.name).text(this.name));
+  });
+
   makeChart(data);
 });
+
+
+
 
 function makeChart(data){
 //get values from selects
@@ -124,6 +135,15 @@ console.log(data);
       .attr("cy", function(d) { return y( d[ySelected] ); })
       .style("fill", function(d) { return color( d["calories"]); });
 
+//helper function to keep tooltip in page
+function stayInPage(num){
+  console.log(num);
+  console.log(num < margin.left);
+    if(num < margin.left){
+      return margin.left;
+    } return num;
+  }
+
   d3.selectAll(".dot")
     .on("mouseover", function(d){
 
@@ -136,7 +156,7 @@ console.log(data);
 
       tooltip.html(d["name"])
         //use scale positioning of data to position tooltip
-        .style("left", x(sugar) + "px")
+        .style("left", stayInPage(x(sugar)) + "px")
         .style("top", y(calcium) + "px");
   });
 
