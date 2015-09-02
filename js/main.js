@@ -2,7 +2,7 @@ var margin = {
   top: 10,
   bottom: 80,
   right: 50,
-  left: 40
+  left: 100
 };
 
 var divWidth = window.innerWidth,
@@ -97,7 +97,7 @@ console.log(data);
   .append("text")
     .attr("class", "xlabel")
     .attr("x", chartWidth/2)
-    .attr("y", 25)
+    .attr("y", 35)
     //this modifies an svg inline style
     .style("text-anchor", "end")
     .text("Sugars (g)");
@@ -140,8 +140,8 @@ console.log(data);
           calcium = d["calcium (g)"];
 
       tooltip.html(d["name"])
-        .style("left", x(sugar) -50 + "px")
-        .style("top", y(calcium) - 60 + "px");
+        .style("left", x(sugar) + "px")
+        .style("top", y(calcium) - 50 + "px");
   });
 
   d3.selectAll(".dot")
@@ -204,8 +204,8 @@ console.log(data);
             yposition = d[selected];
 
         tooltip.html(d["name"])
-          .style("left", newX(xposition) -50 + "px")
-          .style("top", newY(yposition) - 60 + "px");
+          .style("left", newX(xposition) - 5 + "px")
+          .style("top", newY(yposition) - 50 + "px");
     });
 
     svg.selectAll(".dot")
@@ -269,8 +269,8 @@ console.log(data);
           yposition = d[ySelection];
 
       tooltip.html(d["name"])
-        .style("left", newX(xposition) -50 + "px")
-        .style("top", newY(yposition) - 60 + "px");
+        .style("left", newX(xposition) - 5 + "px")
+        .style("top", newY(yposition) - 50 + "px");
   });
 
   svg.selectAll(".dot")
